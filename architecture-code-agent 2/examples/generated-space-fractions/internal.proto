@@ -1,0 +1,7 @@
+syntax = "proto3";
+package spacefractions;
+service GameService {
+  rpc Play(PlayRequest) returns (PlayResponse);
+}
+message PlayRequest {}
+message PlayResponse { string game_id = 1; }

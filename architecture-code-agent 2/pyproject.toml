@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "architecture-code-agent"
+version = "1.0.0"
+description = "An educational coding agent driven by Markdown architecture specifications"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+dependencies = ["openai>=2.0.0,<3.0.0"]
+
+[project.scripts]
+architecture-code-agent = "code_agent.cli:main"
+
+[tool.setuptools]
+packages = ["code_agent"]

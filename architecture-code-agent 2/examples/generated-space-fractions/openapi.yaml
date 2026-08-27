@@ -1,0 +1,24 @@
+openapi: 3.0.3
+info:
+  title: Space Fractions API
+  version: 1.0.0
+paths:
+  /health:
+    get:
+      responses:
+        '200': {description: Service is healthy}
+  /games:
+    post:
+      summary: Start a game
+      responses:
+        '201': {description: Game created}
+  /games/{id}:
+    get:
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: {type: string}
+      responses:
+        '200': {description: Game state}
+        '404': {description: Game not found}

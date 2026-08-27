@@ -1,0 +1,4 @@
+Requirement ID,Short Text,Artifact,Rationale
+FR-1,Play game,src/game-service.js,Creates and updates game sessions
+NFR-1,Performance,src/game-service.js,Uses constant-time in-memory lookup for the demo
+ASR-1,Data durability,sql/game_ddl.sql,Defines a durable PostgreSQL representation

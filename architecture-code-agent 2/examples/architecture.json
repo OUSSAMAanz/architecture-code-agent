@@ -1,0 +1,371 @@
+{
+  "schema_version": "1.0",
+  "system": "Space Fractions",
+  "requirements": [
+    "ASR-1",
+    "ASR-2",
+    "FR-1",
+    "NFR-1"
+  ],
+  "components": [
+    "AdminComponent",
+    "GameComponent",
+    "QuestionComponent",
+    "UserComponent"
+  ],
+  "architecture": {
+    "sections": [
+      {
+        "level": 1,
+        "title": "A. Executive Summary",
+        "content": "The Space Fractions system is a web-based, interactive learning tool designed to improve fraction-solving skills for sixth-grade students. The system consists of an introductory movie, a main menu, a series of fraction questions, and an ending scene with feedback. The architecture will follow a microservices approach, with separate components for the game logic, question management, and user interface. The system will be deployed on a cloud-based infrastructure, ensuring scalability and availability.\n\nChosen architectural style: Microservices\nDeployment topology: Cloud-based infrastructure\n\nTop 3 design risks with concrete mitigations:\n\n| Risk | Mitigation |\n| --- | --- |\n| 1. Scalability issues | Implement load balancing and autoscaling |\n| 2. Security vulnerabilities | Implement encryption and secure authentication |\n| 3. Data loss | Implement regular backups and data replication |\n\nQA coverage mapping:\n\n| ASR/NFR ID | Test Type |\n| --- | --- |\n| ASR-1 (data durability) | Unit testing, Integration testing |\n| NFR-1 (performance) | Load testing, Stress testing |\n| ASR-2 (security) | Penetration testing, Vulnerability scanning |"
+      },
+      {
+        "level": 1,
+        "title": "B. Traceability & Rationale",
+        "content": "The following table maps the requirements to the corresponding components and artifacts:\n\n| Requirement ID | Short Text | Diagram(s) | Component(s) | Artifact filename(s) | Rationale |\n| --- | --- | --- | --- | --- | --- |\n| FR-1 | Play game | UseCaseDiagram | GameComponent | openapi.yaml | Allows users to play the game |\n| NFR-1 | Performance | SequenceDiagram1 | GameComponent | internal.proto | Ensures the game responds quickly to user input |\n| ASR-1 | Data durability | DeploymentDiagram | QuestionComponent | sql/question_ddl.sql | Ensures that question data is persisted and recoverable |"
+      },
+      {
+        "level": 1,
+        "title": "C. Architecture Overview",
+        "content": "The Space Fractions system consists of the following components:\n\n* GameComponent: responsible for game logic and user interaction\n* QuestionComponent: responsible for question management and data persistence\n* UserComponent: responsible for user authentication and authorization\n\nThe system follows a microservices architecture, with each component communicating with others through APIs."
+      },
+      {
+        "level": 1,
+        "title": "D. Detailed Technical Design",
+        "content": ""
+      },
+      {
+        "level": 2,
+        "title": "GameComponent",
+        "content": ""
+      },
+      {
+        "level": 3,
+        "title": "Responsibilities & data ownership",
+        "content": "The GameComponent is responsible for game logic and user interaction. It owns the game state data."
+      },
+      {
+        "level": 3,
+        "title": "Technology options",
+        "content": "* Language/runtime: Node.js 18-20 (Justification: meets ASR-1 (data durability))\n* Web framework: Express.js 4-5 (Justification: meets NFR-1 (performance))\n* RPC/HTTP: RESTful API (Justification: meets ASR-2 (security))\n* Persistence: PostgreSQL 14-15 (Justification: meets ASR-1 (data durability))\n* Cache: Redis 6-7 (Justification: meets NFR-1 (performance))\n* Messaging: RabbitMQ 3-4 (Justification: meets ASR-2 (security))\n* Search: Elasticsearch 7-8 (Justification: meets NFR-1 (performance))\n* Authn/authz: OAuth2 (Justification: meets ASR-2 (security))\n* Observability: Prometheus 2-3 (Justification: meets NFR-1 (performance))\n* CI/CD: Jenkins 2-3 (Justification: meets ASR-1 (data durability))\n* Container runtime: Docker 20-21 (Justification: meets ASR-1 (data durability))\n* Infra provisioning: Terraform 1-2 (Justification: meets ASR-1 (data durability))"
+      },
+      {
+        "level": 3,
+        "title": "Recommended default stack",
+        "content": "* Node.js 18\n* Express.js 4\n* PostgreSQL 14\n* Redis 6\n* RabbitMQ 3\n* Elasticsearch 7\n* OAuth2\n* Prometheus 2\n* Jenkins 2\n* Docker 20\n* Terraform 1\n\nJustification: Meets ASR-1 (data durability), NFR-1 (performance), and ASR-2 (security)"
+      },
+      {
+        "level": 3,
+        "title": "Interface design",
+        "content": ""
+      },
+      {
+        "level": 4,
+        "title": "External APIs",
+        "content": "```yml\nopenapi: 3.0.0\ninfo:\n  title: Space Fractions API\n  description: API for the Space Fractions game\n  version: 1.0.0\npaths:\n  /play:\n    get:\n      summary: Play the game\n      responses:\n        200:\n          description: Game started\n          content:\n            application/json:\n              schema:\n                type: object\n                properties:\n                  gameId:\n                    type: integer\n                    description: Game ID\n```"
+      },
+      {
+        "level": 4,
+        "title": "Internal contracts",
+        "content": "```proto\nsyntax = \"proto3\";\npackage spacefractions;\nservice GameService {\n  rpc Play(PlayRequest) returns (PlayResponse) {}\n}\nmessage PlayRequest {\n  int32 gameId = 1;\n}\nmessage PlayResponse {\n  int32 gameId = 1;\n}\n```"
+      },
+      {
+        "level": 3,
+        "title": "Data model / schema",
+        "content": "```sql\nCREATE TABLE games (\n  id SERIAL PRIMARY KEY,\n  game_state JSONB NOT NULL\n);\n```"
+      },
+      {
+        "level": 3,
+        "title": "Caching & consistency strategy",
+        "content": "* Cache game state in Redis\n* Use PostgreSQL for data persistence\n* Implement data replication for high availability"
+      },
+      {
+        "level": 1,
+        "title": "E. Operations & Deployment",
+        "content": ""
+      },
+      {
+        "level": 2,
+        "title": "Kubernetes-ready plan",
+        "content": "```yml\napiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: spacefractions\nspec:\n  replicas: 3\n  selector:\n    matchLabels:\n      app: spacefractions\n  template:\n    metadata:\n      labels:\n        app: spacefractions\n    spec:\n      containers:\n      - name: spacefractions\n        image: spacefractions:latest\n        ports:\n        - containerPort: 80\n```"
+      },
+      {
+        "level": 2,
+        "title": "DB HA topology",
+        "content": "* Use PostgreSQL replication for high availability\n* Implement regular backups and data replication"
+      },
+      {
+        "level": 1,
+        "title": "F. Security Design",
+        "content": ""
+      },
+      {
+        "level": 2,
+        "title": "Auth & AuthZ",
+        "content": "* Implement OAuth2 for authentication and authorization\n* Use secure password storage and transmission"
+      },
+      {
+        "level": 2,
+        "title": "Secrets management & rotation policy",
+        "content": "* Use a secrets manager like Hashicorp's Vault\n* Rotate secrets regularly"
+      },
+      {
+        "level": 2,
+        "title": "TLS & service-mesh considerations",
+        "content": "* Implement TLS encryption for all communication\n* Use a service mesh like Istio for traffic management and security"
+      },
+      {
+        "level": 2,
+        "title": "Threat model summary",
+        "content": "* Top 5 threats: unauthorized access, data breaches, denial of service, malware, and phishing\n* Mitigations: implement secure authentication and authorization, use encryption, and monitor for suspicious activity"
+      },
+      {
+        "level": 1,
+        "title": "G. Observability & SRE",
+        "content": ""
+      },
+      {
+        "level": 2,
+        "title": "Key per-component & business metrics",
+        "content": "* GameComponent: game start rate, game completion rate, user engagement\n* QuestionComponent: question response rate, question accuracy rate"
+      },
+      {
+        "level": 2,
+        "title": "SLOs, error budgets, RTO/RPO",
+        "content": "* SLO: 99.99% uptime\n* Error budget: 1%\n* RTO: 1 hour\n* RPO: 1 hour"
+      },
+      {
+        "level": 2,
+        "title": "Dashboard & runbook sketch",
+        "content": "* Implement a dashboard for monitoring key metrics\n* Create a runbook for common issues and errors"
+      },
+      {
+        "level": 1,
+        "title": "H. Testing Strategy",
+        "content": ""
+      },
+      {
+        "level": 2,
+        "title": "Matrix mapping Unit / Integration / Contract / E2E / Chaos tests to components",
+        "content": "| Test Type | GameComponent | QuestionComponent |\n| --- | --- | --- |\n| Unit testing | | |\n| Integration testing | | |\n| Contract testing | | |\n| E2E testing | | |\n| Chaos testing | | |"
+      },
+      {
+        "level": 2,
+        "title": "Test data management and environment isolation strategy",
+        "content": "* Use a test data management tool like TestRail\n* Implement environment isolation using Docker and Kubernetes"
+      },
+      {
+        "level": 1,
+        "title": "I. Migration, Data Conversion & Rollout Plan",
+        "content": ""
+      },
+      {
+        "level": 2,
+        "title": "High-level migration steps",
+        "content": "1. Migrate game data to new database\n2. Update game logic to use new database\n3. Deploy new game component"
+      },
+      {
+        "level": 2,
+        "title": "Data-sync strategies",
+        "content": "* Use a data sync tool like Apache NiFi\n* Implement data replication for high availability"
+      },
+      {
+        "level": 2,
+        "title": "Backwards compatibility notes and migration windows for public APIs",
+        "content": "* Implement backwards compatibility for 1 year\n* Use a migration window of 1 month"
+      },
+      {
+        "level": 1,
+        "title": "J. Tradeoffs & Alternatives",
+        "content": ""
+      },
+      {
+        "level": 2,
+        "title": "For each major decision",
+        "content": "* Alternative 1: Use a monolithic architecture\n* Alternative 2: Use a serverless architecture\n* Why chosen: Meets ASR-1 (data durability), NFR-1 (performance), and ASR-2 (security)"
+      },
+      {
+        "level": 1,
+        "title": "K. Open Questions & Assumptions",
+        "content": ""
+      },
+      {
+        "level": 2,
+        "title": "Assumptions",
+        "content": "A1: The game will be played by 1000 users concurrently\nA2: The game will be played for 1 hour per session"
+      },
+      {
+        "level": 2,
+        "title": "Unresolved stakeholder questions needing input",
+        "content": "* What is the expected user growth rate?\n* What is the expected game session length?"
+      },
+      {
+        "level": 1,
+        "title": "L. Deliverables",
+        "content": "```markdown\narchitecture.md\nopenapi.yaml\ninternal.proto\nk8s/spacefractions-deployment.yaml\nsql/game_ddl.sql\ntraceability_matrix.csv\n```\n```yml\nopenapi: 3.0.0\ninfo:\n  title: Space Fractions API\n  description: API for the Space Fractions game\n  version: 1.0.0\npaths:\n  /play:\n    get:\n      summary: Play the game\n      responses:\n        200:\n          description: Game started\n          content:\n            application/json:\n              schema:\n                type: object\n                properties:\n                  gameId:\n                    type: integer\n                    description: Game ID\n```\n```proto\nsyntax = \"proto3\";\npackage spacefractions;\nservice GameService {\n  rpc Play(PlayRequest) returns (PlayResponse) {}\n}\nmessage PlayRequest {\n  int32 gameId = 1;\n}\nmessage PlayResponse {\n  int32 gameId = 1;\n}\n```\n```yml\napiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: spacefractions\nspec:\n  replicas: 3\n  selector:\n    matchLabels:\n      app: spacefractions\n  template:\n    metadata:\n      labels:\n        app: spacefractions\n    spec:\n      containers:\n      - name: spacefractions\n        image: spacefractions:latest\n        ports:\n        - containerPort: 80\n```\n```sql\nCREATE TABLE games (\n  id SERIAL PRIMARY KEY,\n  game_state JSONB NOT NULL\n);\n```\n```csv\nRequirement ID,Short Text,Diagram(s),Component(s),Artifact filename(s),Rationale\nFR-1,Play game,UseCaseDiagram,GameComponent,openapi.yaml,Allows users to play the game\nNFR-1,Performance,SequenceDiagram1,GameComponent,internal.proto,Ensures the game responds quickly to user input\nASR-1,Data durability,DeploymentDiagram,QuestionComponent,sql/question_ddl.sql,Ensures that question data is persisted and recoverable\n```"
+      },
+      {
+        "level": 1,
+        "title": "How to review",
+        "content": "* All FR/NFR/ASR present in traceability matrix?\n* OpenAPI + internal API contract included and valid?\n* Each major component has: responsibilities, stack options (3+), recommended stack + ASR/NFR justification, API contract, and data schema?\n* k8s snippet present and syntactically valid?\n* SQL DDLs provided for persisted entities?\n* Assumptions and open questions clearly listed?"
+      }
+    ],
+    "code_blocks": [
+      {
+        "language": "yml",
+        "content": "openapi: 3.0.0\ninfo:\n  title: Space Fractions API\n  description: API for the Space Fractions game\n  version: 1.0.0\npaths:\n  /play:\n    get:\n      summary: Play the game\n      responses:\n        200:\n          description: Game started\n          content:\n            application/json:\n              schema:\n                type: object\n                properties:\n                  gameId:\n                    type: integer\n                    description: Game ID"
+      },
+      {
+        "language": "proto",
+        "content": "syntax = \"proto3\";\npackage spacefractions;\nservice GameService {\n  rpc Play(PlayRequest) returns (PlayResponse) {}\n}\nmessage PlayRequest {\n  int32 gameId = 1;\n}\nmessage PlayResponse {\n  int32 gameId = 1;\n}"
+      },
+      {
+        "language": "sql",
+        "content": "CREATE TABLE games (\n  id SERIAL PRIMARY KEY,\n  game_state JSONB NOT NULL\n);"
+      },
+      {
+        "language": "yml",
+        "content": "apiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: spacefractions\nspec:\n  replicas: 3\n  selector:\n    matchLabels:\n      app: spacefractions\n  template:\n    metadata:\n      labels:\n        app: spacefractions\n    spec:\n      containers:\n      - name: spacefractions\n        image: spacefractions:latest\n        ports:\n        - containerPort: 80"
+      },
+      {
+        "language": "markdown",
+        "content": "architecture.md\nopenapi.yaml\ninternal.proto\nk8s/spacefractions-deployment.yaml\nsql/game_ddl.sql\ntraceability_matrix.csv"
+      },
+      {
+        "language": "yml",
+        "content": "openapi: 3.0.0\ninfo:\n  title: Space Fractions API\n  description: API for the Space Fractions game\n  version: 1.0.0\npaths:\n  /play:\n    get:\n      summary: Play the game\n      responses:\n        200:\n          description: Game started\n          content:\n            application/json:\n              schema:\n                type: object\n                properties:\n                  gameId:\n                    type: integer\n                    description: Game ID"
+      },
+      {
+        "language": "proto",
+        "content": "syntax = \"proto3\";\npackage spacefractions;\nservice GameService {\n  rpc Play(PlayRequest) returns (PlayResponse) {}\n}\nmessage PlayRequest {\n  int32 gameId = 1;\n}\nmessage PlayResponse {\n  int32 gameId = 1;\n}"
+      },
+      {
+        "language": "yml",
+        "content": "apiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: spacefractions\nspec:\n  replicas: 3\n  selector:\n    matchLabels:\n      app: spacefractions\n  template:\n    metadata:\n      labels:\n        app: spacefractions\n    spec:\n      containers:\n      - name: spacefractions\n        image: spacefractions:latest\n        ports:\n        - containerPort: 80"
+      },
+      {
+        "language": "sql",
+        "content": "CREATE TABLE games (\n  id SERIAL PRIMARY KEY,\n  game_state JSONB NOT NULL\n);"
+      },
+      {
+        "language": "csv",
+        "content": "Requirement ID,Short Text,Diagram(s),Component(s),Artifact filename(s),Rationale\nFR-1,Play game,UseCaseDiagram,GameComponent,openapi.yaml,Allows users to play the game\nNFR-1,Performance,SequenceDiagram1,GameComponent,internal.proto,Ensures the game responds quickly to user input\nASR-1,Data durability,DeploymentDiagram,QuestionComponent,sql/question_ddl.sql,Ensures that question data is persisted and recoverable"
+      }
+    ]
+  },
+  "views": {
+    "sections": [
+      {
+        "level": 2,
+        "title": "ScenarioView",
+        "content": "1. UseCase — Scenario View: Use Case Diagram\n```plantuml\n@startuml UseCaseDiagram\nleft to right direction\nactor EndUser as \"End User\"\nactor Admin as \"Admin\"\nrectangle System {\n  usecase \"Play Game\" as (PlayGame)\n  usecase \"View Score\" as (ViewScore)\n  usecase \"Update Questions\" as (UpdateQuestions)\n  usecase \"View Help\" as (ViewHelp)\n}\nEndUser -- (PlayGame)\nEndUser -- (ViewScore)\nEndUser -- (ViewHelp)\nAdmin -- (UpdateQuestions)\n@enduml\n```"
+      },
+      {
+        "level": 2,
+        "title": "LogicView",
+        "content": "2. Class — Logic View: Class Diagram\n```plantuml\n@startuml ClassDiagram\nclass Game {\n  - id: string\n  - score: int\n  + play(): void\n  + viewScore(): int\n}\nclass Question {\n  - id: string\n  - prompt: string\n  - options: List<string>\n  + getPrompt(): string\n  + getOptions(): List<string>\n}\nclass User {\n  - id: string\n  - username: string\n  + playGame(game: Game): void\n  + viewScore(game: Game): int\n}\nclass Admin {\n  - id: string\n  - username: string\n  + updateQuestions(questions: List<Question>): void\n}\nGame --* Question\nUser --* Game\nAdmin --* Question\n@enduml\n```\n3. Object — Logic View: Object Diagram\n```plantuml\n@startuml ObjectDiagram\nparticipant game1\nparticipant question1\nparticipant user1\nparticipant admin1\ngame1 --> question1\nuser1 --> game1\nadmin1 --> question1\n@enduml\n```\n4. State — Logic View: State Diagram\n```plantuml\n@startuml StateDiagram\nstate Playing\nstate Paused\nstate GameOver\n[*] --> Playing\nPlaying --> Paused : pause()\nPaused --> Playing : resume()\nPlaying --> GameOver : gameOver()\n@enduml\n```"
+      },
+      {
+        "level": 2,
+        "title": "ProcessView",
+        "content": "5. Activity — Process View: Activity Diagram\n```plantuml\n@startuml ActivityDiagram\nstart\n:play game;\nif (game over?) then (yes)\n  :game over;\nelse (no)\n  :continue playing;\nendif\n:calculate score;\n:display score;\nstop\n@enduml\n```\n6. Sequence — Process View: Sequence Diagram \n```plantuml\n@startuml SequenceDiagram1\nparticipant User\nparticipant Game\nparticipant Question\nUser->>Game: play()\nGame->>Question: getPrompt()\nQuestion->>Game: return prompt\nGame->>User: display prompt\nUser->>Game: submit answer\nGame->>Question: check answer\nQuestion->>Game: return result\nGame->>User: display result\n@enduml\n```\n```plantuml\n@startuml SequenceDiagram2\nparticipant Admin\nparticipant Question\nAdmin->>Question: update()\nQuestion->>Admin: return success\n@enduml\n```\n7. Collaboration — Process View: Collaboration Diagram\n```plantuml\n@startuml CollaborationDiagram1\nparticipant User\nparticipant Game\nparticipant Question\nUser->>Game: play()\nGame->>Question: getPrompt()\nQuestion->>Game: return prompt\nGame->>User: display prompt\nUser->>Game: submit answer\nGame->>Question: check answer\nQuestion->>Game: return result\nGame->>User: display result\nnote right of Game: Scenario: Play Game\n@enduml\n```\n```plantuml\n@startuml CollaborationDiagram2\nparticipant Admin\nparticipant Question\nAdmin->>Question: update()\nQuestion->>Admin: return success\nnote right of Question: Scenario: Update Questions\n@enduml\n```"
+      },
+      {
+        "level": 2,
+        "title": "DevelopmentView",
+        "content": "8. Package — Development View: Package Diagram\n```plantuml\n@startuml PackageDiagram\npackage Game {\n  class Game\n  class Question\n}\npackage User {\n  class User\n}\npackage Admin {\n  class Admin\n}\nGame -- User\nGame -- Admin\n@enduml\n```\n9. Component — Development View: Component Diagram\n```plantuml\n@startuml ComponentDiagram\nartifact GameComponent\nartifact QuestionComponent\nartifact UserComponent\nartifact AdminComponent\nGameComponent -- QuestionComponent\nGameComponent -- UserComponent\nGameComponent -- AdminComponent\n@enduml\n```"
+      },
+      {
+        "level": 2,
+        "title": "PhysicalView",
+        "content": "10. Deployment — Physical View: Deployment Diagram\n```plantuml\n@startuml DeploymentDiagram\nnode GameServer\nnode QuestionServer\nnode UserClient\nnode AdminClient\nGameServer -- QuestionServer\nGameServer -- UserClient\nGameServer -- AdminClient\n@enduml\n```\n11. Container — Physical View: Container Diagram\n```plantuml\n@startuml ContainerDiagram\nartifact GameContainer\nartifact QuestionContainer\nartifact UserContainer\nartifact AdminContainer\nGameContainer -- QuestionContainer\nGameContainer -- UserContainer\nGameContainer -- AdminContainer\n@enduml\n```"
+      }
+    ],
+    "diagrams": [
+      {
+        "name": "UseCaseDiagram",
+        "title": "ScenarioView",
+        "view": "ScenarioView",
+        "syntax": "left to right direction\nactor EndUser as \"End User\"\nactor Admin as \"Admin\"\nrectangle System {\n  usecase \"Play Game\" as (PlayGame)\n  usecase \"View Score\" as (ViewScore)\n  usecase \"Update Questions\" as (UpdateQuestions)\n  usecase \"View Help\" as (ViewHelp)\n}\nEndUser -- (PlayGame)\nEndUser -- (ViewScore)\nEndUser -- (ViewHelp)\nAdmin -- (UpdateQuestions)"
+      },
+      {
+        "name": "ClassDiagram",
+        "title": "LogicView",
+        "view": "LogicView",
+        "syntax": "class Game {\n  - id: string\n  - score: int\n  + play(): void\n  + viewScore(): int\n}\nclass Question {\n  - id: string\n  - prompt: string\n  - options: List<string>\n  + getPrompt(): string\n  + getOptions(): List<string>\n}\nclass User {\n  - id: string\n  - username: string\n  + playGame(game: Game): void\n  + viewScore(game: Game): int\n}\nclass Admin {\n  - id: string\n  - username: string\n  + updateQuestions(questions: List<Question>): void\n}\nGame --* Question\nUser --* Game\nAdmin --* Question"
+      },
+      {
+        "name": "ObjectDiagram",
+        "title": "LogicView",
+        "view": "LogicView",
+        "syntax": "participant game1\nparticipant question1\nparticipant user1\nparticipant admin1\ngame1 --> question1\nuser1 --> game1\nadmin1 --> question1"
+      },
+      {
+        "name": "StateDiagram",
+        "title": "LogicView",
+        "view": "LogicView",
+        "syntax": "state Playing\nstate Paused\nstate GameOver\n[*] --> Playing\nPlaying --> Paused : pause()\nPaused --> Playing : resume()\nPlaying --> GameOver : gameOver()"
+      },
+      {
+        "name": "ActivityDiagram",
+        "title": "ProcessView",
+        "view": "ProcessView",
+        "syntax": "start\n:play game;\nif (game over?) then (yes)\n  :game over;\nelse (no)\n  :continue playing;\nendif\n:calculate score;\n:display score;\nstop"
+      },
+      {
+        "name": "SequenceDiagram1",
+        "title": "ProcessView",
+        "view": "ProcessView",
+        "syntax": "participant User\nparticipant Game\nparticipant Question\nUser->>Game: play()\nGame->>Question: getPrompt()\nQuestion->>Game: return prompt\nGame->>User: display prompt\nUser->>Game: submit answer\nGame->>Question: check answer\nQuestion->>Game: return result\nGame->>User: display result"
+      },
+      {
+        "name": "SequenceDiagram2",
+        "title": "ProcessView",
+        "view": "ProcessView",
+        "syntax": "participant Admin\nparticipant Question\nAdmin->>Question: update()\nQuestion->>Admin: return success"
+      },
+      {
+        "name": "CollaborationDiagram1",
+        "title": "ProcessView",
+        "view": "ProcessView",
+        "syntax": "participant User\nparticipant Game\nparticipant Question\nUser->>Game: play()\nGame->>Question: getPrompt()\nQuestion->>Game: return prompt\nGame->>User: display prompt\nUser->>Game: submit answer\nGame->>Question: check answer\nQuestion->>Game: return result\nGame->>User: display result\nnote right of Game: Scenario: Play Game"
+      },
+      {
+        "name": "CollaborationDiagram2",
+        "title": "ProcessView",
+        "view": "ProcessView",
+        "syntax": "participant Admin\nparticipant Question\nAdmin->>Question: update()\nQuestion->>Admin: return success\nnote right of Question: Scenario: Update Questions"
+      },
+      {
+        "name": "PackageDiagram",
+        "title": "DevelopmentView",
+        "view": "DevelopmentView",
+        "syntax": "package Game {\n  class Game\n  class Question\n}\npackage User {\n  class User\n}\npackage Admin {\n  class Admin\n}\nGame -- User\nGame -- Admin"
+      },
+      {
+        "name": "ComponentDiagram",
+        "title": "DevelopmentView",
+        "view": "DevelopmentView",
+        "syntax": "artifact GameComponent\nartifact QuestionComponent\nartifact UserComponent\nartifact AdminComponent\nGameComponent -- QuestionComponent\nGameComponent -- UserComponent\nGameComponent -- AdminComponent"
+      },
+      {
+        "name": "DeploymentDiagram",
+        "title": "PhysicalView",
+        "view": "PhysicalView",
+        "syntax": "node GameServer\nnode QuestionServer\nnode UserClient\nnode AdminClient\nGameServer -- QuestionServer\nGameServer -- UserClient\nGameServer -- AdminClient"
+      },
+      {
+        "name": "ContainerDiagram",
+        "title": "PhysicalView",
+        "view": "PhysicalView",
+        "syntax": "artifact GameContainer\nartifact QuestionContainer\nartifact UserContainer\nartifact AdminContainer\nGameContainer -- QuestionContainer\nGameContainer -- UserContainer\nGameContainer -- AdminContainer"
+      }
+    ]
+  },
+  "statistics": {
+    "requirement_count": 4,
+    "component_count": 4,
+    "diagram_count": 13
+  }
+}

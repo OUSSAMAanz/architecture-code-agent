@@ -1,0 +1,3 @@
+# The offline demo and tests use only the Python standard library.
+# This package enables the optional live OpenAI Codex provider.
+openai>=2.0.0,<3.0.0
