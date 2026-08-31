@@ -19,7 +19,7 @@ repository supports two providers:
 4. Workspace-scoped file operations and path-traversal prevention.
 5. Controlled test execution rather than unrestricted shell access.
 6. Iteration limits, transcripts, and deterministic final validation.
-7. A complete generated Space Fractions example.
+7. A complete generated Space Fractions game with a responsive browser UI.
 
 ## Architecture
 
@@ -67,10 +67,13 @@ python -m code_agent generate \
 
 cd generated-project
 npm test
+npm start
 ```
 
 The committed `examples/generated-space-fractions/` directory is the result of
-that same generation command.
+that same generation command. After `npm start`, open `http://localhost:3000/`
+to play six fraction challenges, receive answer explanations, track progress and
+score, and view the final mission feedback screen.
 
 ## Live OpenAI Codex mode
 
@@ -191,8 +194,9 @@ requirements.txt            Optional live-provider dependency
 - Live output quality depends on the selected model and specification quality.
 - Tests run in a subprocess with a timeout, but production deployment should add
   operating-system sandboxing or container isolation.
-- The generated Space Fractions service is an educational vertical slice, not the
-  full cloud microservices platform suggested by the architecture document.
+- The generated Space Fractions game is an educational vertical slice with a
+  complete playable UI and API, not the full cloud microservices platform
+  suggested by the architecture document.
 
 ## Research basis
 

@@ -43,7 +43,7 @@ Deterministic validation
 - A deterministic offline provider for tests and classroom demonstrations.
 - An OpenAI Responses API provider for live Codex generation.
 - Unit and end-to-end tests.
-- A verified generated Space Fractions API example.
+- A verified generated Space Fractions game with a responsive browser UI and API.
 - Research notes and a short video-demonstration script.
 
 The project source is located in
@@ -90,7 +90,10 @@ npm test
 npm start
 ```
 
-The service health check is then available at
+Open [`http://localhost:3000/`](http://localhost:3000/) to play the generated
+six-question fraction game. It shows each challenge, accepts an answer, gives
+immediate feedback and an explanation, tracks the score, and displays a final
+mission result. The JSON health check remains available at
 [`http://localhost:3000/health`](http://localhost:3000/health).
 
 ## Live OpenAI Codex mode
@@ -134,9 +137,10 @@ blocked, and the loop has a configurable iteration limit.
 
 The committed
 [`examples/generated-space-fractions/`](architecture-code-agent%202/examples/generated-space-fractions/)
-directory demonstrates the expected output. It includes source code, tests, a
-dependency manifest, README, Dockerfile, OpenAPI specification, protocol contract,
-database definition, Kubernetes configuration, and an agent audit trail.
+directory demonstrates the expected output. It includes a complete playable web
+interface, server-side game logic, tests, a dependency manifest, README,
+Dockerfile, OpenAPI specification, protocol contract, database definition,
+Kubernetes configuration, and an agent audit trail.
 
 ## Documentation
 

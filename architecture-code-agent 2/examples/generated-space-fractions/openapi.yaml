@@ -11,7 +11,8 @@ paths:
     post:
       summary: Start a game
       responses:
-        '201': {description: Game created}
+        '201':
+          description: Game created with the first fraction question
   /games/{id}:
     get:
       parameters:
@@ -21,4 +22,25 @@ paths:
           schema: {type: string}
       responses:
         '200': {description: Game state}
+        '404': {description: Game not found}
+  /games/{id}/answers:
+    post:
+      summary: Submit an answer and advance the mission
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: {type: string}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [selectedIndex]
+              properties:
+                selectedIndex: {type: integer, minimum: 0, maximum: 3}
+      responses:
+        '200': {description: Updated game state with answer feedback}
+        '400': {description: Invalid answer payload}
         '404': {description: Game not found}

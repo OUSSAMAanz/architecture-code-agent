@@ -35,6 +35,12 @@ class AgentLoopTests(unittest.TestCase):
             self.assertTrue(result.completed, result.validation_errors)
             self.assertEqual(result.iterations, 4)
             self.assertTrue((root / "src" / "server.js").is_file())
+            self.assertTrue((root / "public" / "index.html").is_file())
+            self.assertTrue((root / "public" / "styles.css").is_file())
+            self.assertIn(
+                "Launch mission",
+                (root / "public" / "index.html").read_text(encoding="utf-8"),
+            )
             self.assertTrue((root / ".agent" / "transcript.jsonl").is_file())
             self.assertEqual(validate_repository(root), [])
 

@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Practice sixth-grade fractions on a mission through space.">
+    <title>Space Fractions — Mission Control</title>
+    <link rel="stylesheet" href="/styles.css">
+    <script src="/app.js" defer></script>
+  </head>
+  <body>
+    <div class="stars stars-one" aria-hidden="true"></div>
+    <div class="stars stars-two" aria-hidden="true"></div>
+
+    <header class="site-header">
+      <a class="brand" href="/" aria-label="Space Fractions home">
+        <span class="brand-mark" aria-hidden="true">⅔</span>
+        <span>
+          <strong>Space Fractions</strong>
+          <small>Mission Control</small>
+        </span>
+      </a>
+      <div class="system-status" aria-label="System online">
+        <span class="status-dot" aria-hidden="true"></span>
+        Learning system online
+      </div>
+    </header>
+
+    <main>
+      <section id="welcome-screen" class="screen welcome-screen" aria-labelledby="welcome-title">
+        <div class="welcome-copy">
+          <p class="eyebrow">Cadet training program · Grade 6</p>
+          <h1 id="welcome-title">Master fractions.<br><span>Reach the stars.</span></h1>
+          <p class="welcome-intro">
+            Complete six fraction challenges, restore the navigation system, and
+            earn your place among the Fraction Explorers.
+          </p>
+          <div class="welcome-actions">
+            <button id="start-button" class="primary-button" type="button">
+              <span>Launch mission</span>
+              <span aria-hidden="true">→</span>
+            </button>
+            <button id="help-button" class="text-button" type="button" aria-expanded="false" aria-controls="help-panel">
+              How to play
+            </button>
+          </div>
+          <div id="help-panel" class="help-panel" hidden>
+            <strong>Your mission</strong>
+            <p>Choose one answer for each challenge. After every response, mission control explains the solution.</p>
+          </div>
+          <ul class="mission-facts" aria-label="Mission details">
+            <li><strong>6</strong><span>challenges</span></li>
+            <li><strong>+100</strong><span>XP available</span></li>
+            <li><strong>∞</strong><span>replays</span></li>
+          </ul>
+        </div>
+
+        <div class="mission-visual" aria-label="Illustration of a spacecraft orbiting a planet">
+          <div class="orbit orbit-outer"></div>
+          <div class="orbit orbit-inner"></div>
+          <div class="planet">
+            <span class="planet-ring"></span>
+            <span class="planet-glow"></span>
+          </div>
+          <div class="rocket" aria-hidden="true">
+            <span class="rocket-window"></span>
+            <span class="rocket-flame"></span>
+          </div>
+          <div class="visual-label label-one"><span>01</span> Add</div>
+          <div class="visual-label label-two"><span>02</span> Simplify</div>
+          <div class="visual-label label-three"><span>03</span> Explore</div>
+        </div>
+      </section>
+
+      <section id="game-screen" class="screen game-screen" aria-labelledby="question-heading" hidden>
+        <div class="mission-toolbar">
+          <div>
+            <p class="eyebrow">Navigation repair mission</p>
+            <p id="question-count" class="question-count">Question 1 of 6</p>
+          </div>
+          <div class="score-display" aria-live="polite">
+            <span>Mission score</span>
+            <strong><span id="score-value">0</span> / <span id="score-total">6</span></strong>
+          </div>
+        </div>
+
+        <div class="progress-track" aria-label="Mission progress">
+          <span id="progress-bar" style="width: 0%"></span>
+        </div>
+
+        <div class="game-layout">
+          <article class="question-panel">
+            <div class="question-meta">
+              <span class="mission-chip">Fraction systems</span>
+              <span id="question-id">ORBIT-1</span>
+            </div>
+            <h2 id="question-heading" tabindex="-1">Loading your mission…</h2>
+            <div id="expression" class="expression" aria-label="Fraction expression">—</div>
+            <div id="answers" class="answers" role="group" aria-label="Answer choices"></div>
+          </article>
+
+          <aside class="mission-panel" aria-label="Mission information">
+            <div class="radar" aria-hidden="true">
+              <span class="radar-sweep"></span>
+              <span class="radar-point point-one"></span>
+              <span class="radar-point point-two"></span>
+            </div>
+            <div>
+              <p class="panel-label">Mission control</p>
+              <h3>Think before you launch.</h3>
+              <p>Find a common denominator, simplify when possible, and choose the strongest answer.</p>
+            </div>
+            <div class="streak-row">
+              <span>Current streak</span>
+              <strong id="streak-value">0</strong>
+            </div>
+          </aside>
+        </div>
+
+        <div id="feedback-panel" class="feedback-panel" aria-live="polite" hidden>
+          <div class="feedback-icon" aria-hidden="true"></div>
+          <div class="feedback-copy">
+            <p id="feedback-title">Correct trajectory!</p>
+            <span id="feedback-message"></span>
+          </div>
+          <button id="next-button" class="primary-button compact" type="button">Next challenge <span aria-hidden="true">→</span></button>
+        </div>
+      </section>
+
+      <section id="result-screen" class="screen result-screen" aria-labelledby="result-title" hidden>
+        <div class="result-orbit" aria-hidden="true">
+          <span class="result-planet"></span>
+          <span class="result-craft">★</span>
+        </div>
+        <p class="eyebrow">Mission complete</p>
+        <h2 id="result-title">Navigation restored!</h2>
+        <p id="result-message" class="result-message">Excellent work, cadet.</p>
+        <div class="result-score">
+          <span id="result-percent">100%</span>
+          <small>accuracy</small>
+        </div>
+        <div class="result-details">
+          <div><strong id="final-score">6 / 6</strong><span>correct answers</span></div>
+          <div><strong id="final-xp">100 XP</strong><span>mission reward</span></div>
+          <div><strong id="final-rank">Star navigator</strong><span>new rank</span></div>
+        </div>
+        <button id="replay-button" class="primary-button" type="button">Fly another mission <span aria-hidden="true">↻</span></button>
+      </section>
+
+      <section id="error-panel" class="error-panel" role="alert" hidden>
+        <strong>Mission control lost contact.</strong>
+        <p id="error-message">Please check that the server is running, then try again.</p>
+        <button id="retry-button" class="text-button" type="button">Retry connection</button>
+      </section>
+    </main>
+
+    <footer>
+      <span>Space Fractions Learning Lab</span>
+      <span>Generated by Architecture Code Agent</span>
+    </footer>
+  </body>
+</html>

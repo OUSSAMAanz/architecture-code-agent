@@ -5,6 +5,7 @@ from __future__ import annotations
 import itertools
 import json
 import os
+from pathlib import Path
 from typing import Any, Protocol
 
 from .models import ModelResponse, ToolCall
@@ -125,7 +126,75 @@ class ScriptedDemoProvider:
             )
         return ModelResponse(text=text, tool_calls=tuple(calls), raw_content=raw)
 
+    def _repository_template_batches(self) -> list[tuple[str, list[ToolCall]]] | None:
+        """Load the verified example as the offline provider's canonical template.
+
+        Keeping the classroom fixture and the committed example aligned prevents
+        the demonstration from silently drifting away from what reviewers see in
+        the repository. The embedded service below remains a small fallback for
+        source distributions that omit the example directory.
+        """
+
+        root = Path(__file__).resolve().parent.parent / "examples" / "generated-space-fractions"
+        implementation_files = [
+            "package.json",
+            "README.md",
+            "src/game-service.js",
+            "src/server.js",
+            "public/index.html",
+            "public/styles.css",
+            "public/app.js",
+            "tests/game-service.test.js",
+            "tests/server.test.js",
+        ]
+        architecture_files = [
+            "openapi.yaml",
+            "internal.proto",
+            "sql/game_ddl.sql",
+            "k8s/deployment.yaml",
+            "Dockerfile",
+            "traceability_matrix.csv",
+        ]
+        all_files = implementation_files + architecture_files
+        if not all((root / relative).is_file() for relative in all_files):
+            return None
+
+        def write_calls(paths: list[str]) -> list[ToolCall]:
+            return [
+                self._call(
+                    "write_file",
+                    path=relative,
+                    content=(root / relative).read_text(encoding="utf-8"),
+                )
+                for relative in paths
+            ]
+
+        return [
+            (
+                "I will generate a playable Space Fractions web game with a responsive user interface and server-owned answer checking.",
+                write_calls(implementation_files),
+            ),
+            (
+                "Now I will add the architecture, API, data, and deployment artifacts.",
+                write_calls(architecture_files),
+            ),
+            ("The playable implementation is ready for verification.", [self._call("run_tests")]),
+            (
+                "The UI and API tests have passed, so I will finish.",
+                [
+                    self._call(
+                        "finish",
+                        summary="Generated a playable Space Fractions web game, responsive UI, API, tests, and architecture artifacts.",
+                    )
+                ],
+            ),
+        ]
+
     def _batches(self) -> list[tuple[str, list[ToolCall]]]:
+        repository_batches = self._repository_template_batches()
+        if repository_batches is not None:
+            return repository_batches
+
         package_json = """{
   "name": "space-fractions",
   "version": "1.0.0",

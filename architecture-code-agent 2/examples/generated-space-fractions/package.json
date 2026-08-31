@@ -2,7 +2,7 @@
   "name": "space-fractions",
   "version": "1.0.0",
   "private": true,
-  "description": "Small service generated from the Space Fractions architecture",
+  "description": "Interactive fraction learning game generated from the Space Fractions architecture",
   "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",
